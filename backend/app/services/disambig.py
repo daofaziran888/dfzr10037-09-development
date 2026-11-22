@@ -18,8 +18,10 @@ class DisambigService(BaseModuleService):
     NEGATIVE_ACTIONS = []
 
     # ===== 跨模块数据流实现 =====
-    def run_action(self, entry_id: int, action: str) -> tuple[dict[str, Any] | None, str]:
-        entry, message = super().run_action(entry_id, action)
+    def run_action(
+        self, entry_id: int, action: str, remark: str | None = None, **kwargs: Any
+    ) -> tuple[dict[str, Any] | None, str]:
+        entry, message = super().run_action(entry_id, action, remark=remark)
         if entry is None:
             return entry, message
         # 链路 L8: disambig → path_reason（消岐融合后触发路径推理）

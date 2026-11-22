@@ -18,8 +18,10 @@ class EntityLinkService(BaseModuleService):
     NEGATIVE_ACTIONS = ["驳回归并"]
 
     # ===== 跨模块数据流实现 =====
-    def run_action(self, entry_id: int, action: str) -> tuple[dict[str, Any] | None, str]:
-        entry, message = super().run_action(entry_id, action)
+    def run_action(
+        self, entry_id: int, action: str, remark: str | None = None, **kwargs: Any
+    ) -> tuple[dict[str, Any] | None, str]:
+        entry, message = super().run_action(entry_id, action, remark=remark)
         if entry is None:
             return entry, message
         # 链路 L7: entity_link → disambig（确认链接后更新消岐融合状态）

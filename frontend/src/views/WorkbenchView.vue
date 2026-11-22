@@ -168,7 +168,18 @@ async function submitCreate() {
 async function runAction(action: string, row: EntryRow) {
   errorMessage.value = ''
   try {
-    const result = await applyAction(meta.key, Number(row.id), action)
+    const extra: { remark?: string; reviewer?: string } = {}
+    if (meta.key === 'graph_compare' && (action === '领取复核' || action === '提交复核结论')) {
+      const reviewer = window.prompt('请输入复核人姓名', String(row['复核人'] ?? ''))
+      if (reviewer === null) return
+      extra.reviewer = reviewer
+      if (action === '提交复核结论') {
+        const conclusion = window.prompt('请输入复核结论（为什么撤销 / 新整改内容）', String(row['复核结论'] ?? ''))
+        if (conclusion === null) return
+        extra.remark = conclusion
+      }
+    }
+    const result = await applyAction(meta.key, Number(row.id), action, extra)
     if (!result.ok) throw new Error(result.message)
     await reload()
   } catch (error) {
